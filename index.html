@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Video to Reels</title>
+<style>
+body {
+  font-family: Arial;
+  background: #f4f4f4;
+  padding: 20px;
+}
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: auto;
+}
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>🎬 Video → Reels</h2>
+
+  <input type="file" id="videoInput" accept="video/*"><br><br>
+
+  <select id="duration">
+    <option value="5">5 sec</option>
+    <option value="10">10 sec</option>
+    <option value="15">15 sec</option>
+  </select>
+
+  <button id="splitBtn" disabled>Split & Download</button>
+
+  <p id="status"></p>
+</div>
+
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+
+
+<script>
+const { createFFmpeg, fetchFile } = FFmpeg;
+const ffmpeg = createFFmpeg({
+  log: true,
+  corePath: "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.6/dist/ffmpeg-core.js"
+});
+
+
+
+const input = document.getElementById("videoInput");
+const btn = document.getElementById("splitBtn");
+const statusText = document.getElementById("status");
+const durationSelect = document.getElementById("duration");
+
+let file;
+
+input.onchange = () => {
+  file = input.files[0];
+  btn.disabled = false;
+};
+
+btn.onclick = async () => {
+  statusText.innerText = "⏳ Loading FFmpeg (first time takes ~10s)...";
+
+  if (!ffmpeg.isLoaded()) await ffmpeg.load();
+
+  ffmpeg.FS("writeFile", "input.mp4", await fetchFile(file));
+
+  statusText.innerText = "✂️ Splitting video...";
+
+  await ffmpeg.run(
+    "-i", "input.mp4",
+    "-map", "0",
+    "-segment_time", durationSelect.value,
+    "-f", "segment",
+    "-reset_timestamps", "1",
+    "reel_%03d.mp4"
+  );
+
+  let i = 0;
+  while (true) {
+    try {
+      const name = `reel_${String(i).padStart(3, "0")}.mp4`;
+      const data = ffmpeg.FS("readFile", name);
+
+      const url = URL.createObjectURL(
+        new Blob([data.buffer], { type: "video/mp4" })
+      );
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = name;
+      a.click();
+
+      i++;
+    } catch {
+      break;
+    }
+  }
+
+  statusText.innerText = "✅ YouTube-ready MP4 reels downloaded!";
+};
+</script>
+
+
+</body>
+</html>
