@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Diwali Dhamaka ✨</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@900&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--sky1:#4a1f66;--sky2:#170d35;--sky3:#07041a;--gold:#ffd86b;--ember:#ff8c1a;--cream:#ffe9c2;--rose:#ff4f93;--plum:#2a0f45;color-scheme:dark;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;overflow:hidden;touch-action:manipulation;color:#fff;text-align:center;font-family:'Nunito',system-ui,'Segoe UI',sans-serif;
+  background:radial-gradient(ellipse at 50% 30%,var(--sky1) 0,var(--sky2) 50%,var(--sky3) 100%)}
+canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.stars i{position:fixed;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5;animation:tw 3s infinite alternate;z-index:0}
+@keyframes tw{to{opacity:.05}}
+.bulbs{position:fixed;top:env(safe-area-inset-top,0px);left:0;width:100%;display:flex;justify-content:space-around;padding:6px 4px;z-index:2;pointer-events:none}
+.bulb{width:13px;height:19px;border-radius:50% 50% 45% 45%;box-shadow:0 0 16px currentColor;animation:blink 1.1s infinite alternate}
+.bulb:nth-child(3n){color:#ff3d8b;background:#ff3d8b}
+.bulb:nth-child(3n+1){color:#44f0ff;background:#44f0ff;animation-delay:.4s}
+.bulb:nth-child(3n+2){color:#ffe45c;background:#ffe45c;animation-delay:.8s}
+@keyframes blink{to{opacity:.3;filter:brightness(.55)}}
+.scene{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:54px 16px 18px;pointer-events:none}
+.scene button,.scene .gift{pointer-events:auto}
+h1{margin:0;font-family:'Cinzel Decorative',Georgia,serif;font-weight:900;font-size:clamp(2.1rem,8.5vw,5.2rem);line-height:1.08;color:var(--gold);
+  text-shadow:0 0 10px var(--ember),0 0 34px #ff3d00;animation:rise 1.4s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes rise{from{opacity:0;transform:scale(.55) translateY(20px)}}
+.sub{max-width:34em;margin:12px auto 0;font-size:clamp(.95rem,2.6vw,1.25rem);line-height:1.5;color:var(--cream)}
+.controls{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:46px}
+.row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:640px}
+button{font:inherit;font-weight:800;font-size:1rem;cursor:pointer;border-radius:999px;padding:13px 22px;color:var(--cream);
+  background:rgba(42,15,69,.78);border:2px solid var(--gold);box-shadow:0 0 16px rgba(255,170,60,.35);transition:transform .15s,box-shadow .15s,background .15s;backdrop-filter:blur(4px)}
+button:hover{transform:translateY(-3px);box-shadow:0 0 26px rgba(255,170,60,.7)}
+button:active{transform:translateY(1px) scale(.97)}
+button:focus-visible,.gift:focus-visible{outline:3px solid #fff;outline-offset:3px}
+button.main{color:#45113c;border-color:#fff3b0;background:linear-gradient(135deg,#fff1a8,#ff9d3d)}
+.gift{font-size:3.6rem;line-height:1;background:none;border:0;padding:0;filter:drop-shadow(0 0 14px #ffcf5c);animation:bob 1.8s infinite ease-in-out}
+.gift.open{animation:pop .6s forwards}
+@keyframes bob{50%{transform:translateY(-8px) rotate(5deg)}}
+@keyframes pop{50%{transform:scale(1.5) rotate(14deg)}100%{transform:scale(1)}}
+.note{min-height:3em;max-width:30em;font-size:1.05rem;line-height:1.45;color:#ffe6a6}
+.diyas{position:fixed;bottom:calc(6px + env(safe-area-inset-bottom,0px));left:0;width:100%;display:flex;justify-content:space-around;z-index:1;pointer-events:none;font-size:clamp(1.6rem,5vw,2.4rem)}
+.diyas span{filter:drop-shadow(0 0 10px #ffb02e);animation:flame 1.6s infinite alternate ease-in-out}
+.diyas span:nth-child(even){animation-delay:.6s}
+@keyframes flame{from{filter:drop-shadow(0 0 5px #ff8c1a) brightness(.85)}to{filter:drop-shadow(0 0 16px #ffd86b) brightness(1.15)}}
+.floor{position:fixed;bottom:0;left:0;width:100%;height:110px;background:linear-gradient(transparent,rgba(255,138,42,.18));pointer-events:none;z-index:0}
+.toast{position:fixed;left:50%;top:calc(70px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:3;padding:8px 18px;border-radius:999px;background:rgba(0,0,0,.55);color:var(--cream);font-weight:800;font-size:.95rem;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.bulb,.stars i,.gift,.diyas span{animation:none}h1{animation:none}}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<canvas id="c"></canvas>
+<div class="bulbs" id="bulbs"></div>
+<div class="toast" id="toast"></div>
+
+<main class="scene">
+  <header>
+    <div style="font-size:2.6rem">🪔✨🪔</div>
+    <h1>Happy Diwali!</h1>
+    <p class="sub">May your home glow with light, your plate overflow with sweets, and your whole year sparkle with joy.</p>
+  </header>
+
+  <section class="controls">
+    <div class="row">
+      <button class="main" id="bRocket">🚀 Launch a rocket</button>
+      <button id="bCrack">🧨 Light the firecrackers</button>
+      <button id="bSpark">🎇 Light a sparkler</button>
+      <button id="bFinale">🎆 Grand finale</button>
+    </div>
+    <p class="note" id="note">Tap anywhere in the sky to send a rocket there. A surprise gift is waiting below.</p>
+    <button class="gift" id="gift" aria-label="Open your gift">🎁</button>
+    <button id="bSound" aria-pressed="true">🔊 Sound on</button>
+  </section>
+</main>
+
+<div class="floor"></div>
+<div class="diyas" id="diyas"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+/* decor */
+for(let i=0;i<28;i++){const b=document.createElement('i');b.className='bulb';$('bulbs').appendChild(b)}
+for(let i=0;i<10;i++){const s=document.createElement('span');s.textContent='🪔';$('diyas').appendChild(s)}
+for(let i=0;i<70;i++){const s=document.createElement('i');s.style.left=rnd(0,100)+'vw';s.style.top=rnd(0,70)+'vh';s.style.animationDelay=rnd(0,3)+'s';$('stars').appendChild(s)}
+
+/* canvas */
+const cv=$('c'),x=cv.getContext('2d');
+let W,H;
+function size(){const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;x.setTransform(d,0,0,d,0,0)}
+addEventListener('resize',size);size();
+
+const cols=[[255,216,107],[255,90,140],[90,230,255],[160,255,120],[255,140,40],[200,140,255],[255,255,255]];
+const P=[],R=[],K=[];let SP=null,flash=0;
+
+function part(px,py,vx,vy,life,col,s,g,d){P.push({x:px,y:py,vx,vy,l:life,m:life,c:col,s:s||2,g:g==null?.045:g,d:d||.985})}
+
+/* sound */
+let AC=null,sound=true;
+function snd(t){
+  if(!sound)return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const cfg={whoosh:[.25,1200,.35],boom:[.9,420,.55],crack:[.6,3200,.09]}[t];
+    const len=Math.floor(AC.sampleRate*cfg[2]),buf=AC.createBuffer(1,len,AC.sampleRate),da=buf.getChannelData(0);
+    for(let i=0;i<len;i++)da[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
+    const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();
+    s.buffer=buf;f.type='lowpass';f.frequency.value=cfg[1];g.gain.value=cfg[0]*.45;
+    s.connect(f);f.connect(g);g.connect(AC.destination);s.start();
+  }catch(e){}
+}
+
+/* rockets */
+function launch(tx,ty){
+  const px=tx!=null?tx:rnd(W*.12,W*.88);
+  const targetY=ty!=null?ty:rnd(H*.14,H*.42);
+  R.push({x:px,y:H-30,vx:rnd(-.4,.4),vy:-(H-targetY)/55,ty:targetY});
+  snd('whoosh');
+}
+function burst(px,py){
+  const type=pick(['peony','ring','willow','multi']),base=pick(cols);
+  const n=type==='willow'?90:110;
+  for(let i=0;i<n;i++){
+    const a=Math.PI*2*i/n+rnd(-.05,.05);
+    let sp=type==='ring'?4:rnd(.6,5);
+    const col=type==='multi'?pick(cols):base;
+    const life=type==='willow'?rnd(110,160):rnd(60,100);
+    part(px,py,Math.cos(a)*sp,Math.sin(a)*sp,life,col,type==='willow'?1.6:2.2,type==='willow'?.03:.05,type==='willow'?.975:.985);
+  }
+  if(type==='ring')for(let i=0;i<40;i++){const a=Math.PI*2*i/40;part(px,py,Math.cos(a)*2,Math.sin(a)*2,70,[255,255,255],1.8)}
+  flash=.35;snd('boom');
+}
+
+/* firecrackers */
+function lightCrackers(){
+  const n=Math.max(10,Math.floor(W/46)),now=performance.now();
+  for(let i=0;i<n;i++)K.push({x:W*.06+(W*.88)*i/(n-1),t:now+i*95+300,y:H-34,done:false});
+  toast('The fuse is lit… stand back! 🧨');
+}
+function pop(k){
+  snd('crack');flash=Math.max(flash,.18);
+  for(let i=0;i<28;i++){const a=rnd(0,Math.PI*2),s=rnd(1,5);part(k.x,k.y,Math.cos(a)*s,Math.sin(a)*s-2,rnd(14,34),pick([[255,200,80],[255,120,40],[255,255,255]]),rnd(1.2,2.4),.12,.94)}
+  for(let i=0;i<6;i++)part(k.x,k.y,rnd(-2,2),rnd(-7,-3),rnd(30,50),[255,90,60],1.6,.18,.97);
+}
+
+/* sparkler (fuljhadi) */
+function lightSparkler(){
+  SP={x:W/2,y:H*.6,life:720};
+  toast('Move your finger or mouse to draw with the sparkler ✨');
+}
+addEventListener('pointermove',e=>{if(SP){SP.x=e.clientX;SP.y=e.clientY}});
+addEventListener('pointerdown',e=>{
+  if(SP){SP.x=e.clientX;SP.y=e.clientY;return}
+  if(e.target.closest('button'))return;
+  launch(e.clientX,e.clientY);
+});
+
+/* main loop */
+function loop(){
+  x.globalCompositeOperation='destination-out';
+  x.fillStyle='rgba(0,0,0,.24)';x.fillRect(0,0,W,H);
+  x.globalCompositeOperation='lighter';
+
+  for(let i=R.length-1;i>=0;i--){
+    const r=R[i];r.x+=r.vx;r.y+=r.vy;r.vy*=.985;
+    part(r.x,r.y,rnd(-.4,.4),rnd(.4,1.6),rnd(18,32),[255,170,70],1.6,.02,.97);
+    x.fillStyle='#fff';x.beginPath();x.arc(r.x,r.y,2.6,0,6.3);x.fill();
+    if(r.y<=r.ty||r.vy>-1.2){burst(r.x,r.y);R.splice(i,1)}
+  }
+
+  const now=performance.now();
+  for(let i=K.length-1;i>=0;i--){
+    const k=K[i];
+    if(now>=k.t){pop(k);K.splice(i,1);continue}
+    if(k.t-now<260)part(k.x+rnd(-3,3),k.y-14,rnd(-1,1),rnd(-2,0),10,[255,210,90],1.4,.05,.9);
+    x.fillStyle='#e0262f';x.fillRect(k.x-4,k.y-12,8,24);
+    x.fillStyle='#ffd86b';x.fillRect(k.x-4,k.y-4,8,4);
+  }
+
+  for(let i=P.length-1;i>=0;i--){
+    const p=P[i];p.vx*=p.d;p.vy=p.vy*p.d+p.g;p.x+=p.vx;p.y+=p.vy;p.l--;
+    if(p.l<=0){P.splice(i,1);continue}
+    const a=Math.min(1,p.l/p.m*1.6);
+    x.fillStyle='rgba('+p.c[0]+','+p.c[1]+','+p.c[2]+','+a.toFixed(2)+')';
+    x.beginPath();x.arc(p.x,p.y,p.s*(.5+a/2),0,6.3);x.fill();
+  }
+
+  if(SP){
+    SP.life--;
+    for(let i=0;i<9;i++){const a=rnd(0,Math.PI*2),s=rnd(.8,4.2);part(SP.x,SP.y,Math.cos(a)*s,Math.sin(a)*s-.6,rnd(14,34),pick([[255,230,140],[255,255,255],[255,170,60]]),rnd(1,2),.09,.93)}
+    x.globalCompositeOperation='source-over';
+    const burnt=1-SP.life/720;
+    x.strokeStyle='#b8b8c8';x.lineWidth=3;x.lineCap='round';
+    x.beginPath();x.moveTo(SP.x+4,SP.y+8+burnt*40);x.lineTo(SP.x+26,SP.y+78);x.stroke();
+    x.fillStyle='#fff7c2';x.beginPath();x.arc(SP.x,SP.y,5,0,6.3);x.fill();
+    if(SP.life<=0){SP=null;toast('Sparkler burnt out. Light another!')}
+  }
+
+  if(flash>.01){
+    x.globalCompositeOperation='lighter';
+    const g=x.createRadialGradient(W/2,H,0,W/2,H,H);
+    g.addColorStop(0,'rgba(255,190,100,'+flash*.5+')');g.addColorStop(1,'rgba(255,190,100,0)');
+    x.fillStyle=g;x.fillRect(0,0,W,H);flash*=.85;
+  }
+  requestAnimationFrame(loop);
+}
+loop();
+
+/* ui */
+let tt;
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2600)}
+function finale(n){for(let i=0;i<n;i++)setTimeout(()=>launch(),i*260+rnd(0,160))}
+$('bRocket').onclick=()=>launch();
+$('bCrack').onclick=lightCrackers;
+$('bSpark').onclick=lightSparkler;
+$('bFinale').onclick=()=>{finale(14);setTimeout(lightCrackers,1200);toast('Grand finale! 🎆')};
+$('bSound').onclick=e=>{sound=!sound;e.currentTarget.textContent=sound?'🔊 Sound on':'🔇 Sound off';e.currentTarget.setAttribute('aria-pressed',sound)};
+$('gift').onclick=()=>{
+  const g=$('gift');g.classList.remove('open');void g.offsetWidth;g.classList.add('open');
+  $('note').innerHTML='<span style="display:block;font-size:4.5rem;line-height:1.1;filter:drop-shadow(0 0 16px #ffcf5c)">🖕</span>Surprise! The gift is… a middle finger! 😂 Happy Diwali anyway!';
+  finale(8);
+};
+
+/* welcome show */
+setTimeout(()=>launch(W*.3),700);setTimeout(()=>launch(W*.7),1300);setTimeout(()=>launch(W*.5),1900);
+setInterval(()=>{if(R.length<2&&P.length<400)launch()},4200);
+</script>
+</body>
+</html>
